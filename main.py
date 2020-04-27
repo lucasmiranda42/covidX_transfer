@@ -8,6 +8,7 @@ Main training pipeline for the covidX_transfer project
 import argparse
 from keras_preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.inception_resnet_v2 import InceptionResNetV2
+from tensorflow.keras.applications.nasnet import NASNetLarge
 
 parser = argparse.ArgumentParser(
     description="Training script for the covidX_transfer project"
@@ -39,8 +40,8 @@ if verb not in [0, 1, 2]:
     raise ValueError("verbose has to be one of 0, 1 or 2")
 
 
-pre_trained_model = InceptionResNetV2(
-    input_shape=(150, 150, 3), include_top=False, weights="imagenet"
+pre_trained_model = NASNetLarge(
+    input_shape=(331, 331, 3), include_top=False, weights="imagenet"
 )
 
 if verb == 2:
