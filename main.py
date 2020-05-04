@@ -60,8 +60,8 @@ last_output = last_layer.output
 
 """toy model for testing the generators"""
 
-# Flatten the output layer to 1 dimension
-x = layers.Flatten()(last_output)
+# Adds a global average pooling to reduce the dimensionality of the output
+x = layers.GlobalAveragePooling2D()(last_output)
 # Add a fully connected layer with 1,024 hidden units and ReLU activation
 x = layers.Dense(1024, activation="relu")(x)
 # Add a dropout rate of 0.2
@@ -90,6 +90,7 @@ train_datagen = ImageDataGenerator(
     shear_range=0.1,
     zoom_range=0.1,
     horizontal_flip=False,
+    vertical_flip=False
 )
 
 # Note that the validation data should not be augmented!
