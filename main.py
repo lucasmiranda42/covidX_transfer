@@ -29,11 +29,20 @@ parser.add_argument(
     type=int,
     default=1,
 )
+parser.add_argument(
+    "--fine-tune",
+    "-f",
+    default=False,
+    help="Fine tune the whole pretrained model if True, and only the last layer if False",
+    type=bool,
+)
 
 args = parser.parse_args()
 path = args.path
 verb = int(args.verbose)
 blend = args.blend
+fine_tune = args.fine_tune
+
 
 if not path:
     raise ValueError("set a valid data path for the training to run")
@@ -45,8 +54,9 @@ pre_trained_model = NASNetLarge(
     input_shape=(331, 331, 3), include_top=False, weights="imagenet"
 )
 
-for layer in pre_trained_model.layers:
-    layer.trainable = False
+if not fine_tune:
+    for layer in pre_trained_model.layers:
+        layer.trainable = False
 
 if verb == 2:
     print(pre_trained_model.summary())
@@ -90,7 +100,7 @@ train_datagen = ImageDataGenerator(
     shear_range=0.1,
     zoom_range=0.1,
     horizontal_flip=False,
-    vertical_flip=False
+    vertical_flip=False,
 )
 
 # Note that the validation data should not be augmented!
