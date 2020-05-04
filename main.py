@@ -93,7 +93,8 @@ test_dir = "{}/test".format(path)
 
 # Add our data-augmentation parameters to ImageDataGenerator
 train_datagen = ImageDataGenerator(
-    rescale=1.0 / 255.0,
+    samplewise_center=True,
+    samplewise_std_normalization= True,
     rotation_range=10,
     width_shift_range=0.1,
     height_shift_range=0.1,
