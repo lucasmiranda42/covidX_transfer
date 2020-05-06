@@ -6,10 +6,10 @@ Main training pipeline for the covidX_transfer project
 """
 
 import argparse
+import tensorflow as tf
 from keras_preprocessing.image import ImageDataGenerator
-from tensorflow.keras import layers, Model
 from tensorflow.keras.applications.nasnet import NASNetLarge
-from tensorflow.keras.optimizers import Adam
+from hypermodel import NASnet_transfer
 
 parser = argparse.ArgumentParser(
     description="Training script for the covidX_transfer project"
@@ -65,29 +65,6 @@ datagen = ImageDataGenerator(
     rotation_range=10, zoom_range=0.10, width_shift_range=0.1, height_shift_range=0.1
 )
 
-last_layer = pre_trained_model.get_layer(pre_trained_model.layers[-1].name)
-last_output = last_layer.output
-
-"""toy model for testing the generators"""
-
-# Adds a global average pooling to reduce the dimensionality of the output
-x = layers.GlobalAveragePooling2D()(last_output)
-# Add a fully connected layer with 1,024 hidden units and ReLU activation
-x = layers.Dense(1024, activation="relu")(x)
-# Add a dropout rate of 0.2
-x = layers.Dropout(0.2)(x)
-# Add a final sigmoid layer for classification
-x = layers.Dense(3, activation="softmax")(x)
-
-model = Model(pre_trained_model.input, x)
-
-model.compile(
-    optimizer=Adam(lr=0.0001), loss="binary_crossentropy", metrics=["accuracy"]
-)
-
-if verb == 2:
-    print(model.summary())
-
 train_dir = "{}/train".format(path)
 test_dir = "{}/test".format(path)
 
@@ -117,16 +94,41 @@ test_generator = test_datagen.flow_from_directory(
     test_dir, batch_size=32, class_mode="categorical", target_size=(331, 331)
 )
 
-history = model.fit(
-    train_generator,
-    validation_data=test_generator,
-    steps_per_epoch=100,
-    epochs=1,
-    validation_steps=50,
-    verbose=verb,
-)
 
-# Load hypermodel and run hyperparameter tuning
+def tune_search(train, test, project_name, verb):
+    """Define the search space using keras-tuner and bayesian optimization"""
+    hypermodel = NASnet_transfer(input_shape=(331, 331, 3))
+
+    tuner = BayesianOptimization(
+        hypermodel,
+        max_trials=100,
+        executions_per_trial=3,
+        seed=42,
+        objective="balanced_accuracy",
+        directory="BayesianOptx",
+        project_name=project_name,
+        # distribution_strategy=tf.distribute.MirroredStrategy(),
+    )
+
+    if verb == 2:
+        print(tuner.search_space_summary())
+
+    tuner.search(
+        train,
+        train,
+        epochs=30,
+        validation_data=(test, test),
+        verbose=verb,
+        batch_size=128,
+        callbacks=[tf.keras.callbacks.EarlyStopping("val_loss", patience=3)],
+        class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
+    )
+
+    if verb == 2:
+        print(tuner.results_summary())
+
+    return tuner.get_best_models()[0]
+
 
 # Train and deploy the resulting model
 
