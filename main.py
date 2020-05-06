@@ -94,7 +94,12 @@ test_generator = test_datagen.flow_from_directory(
 )
 
 print("Starting hyperparameter tuning...")
-tune_search(train_generator, test_generator, pre_trained_model, "COVIDx", verb)
+best_model = tune_search(
+    train_generator, test_generator, pre_trained_model, "COVIDx", verb
+)
+
+best_model.save('COVIDx_transfer_best_model.h5')
+
 print("Done!")
 
 

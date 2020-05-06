@@ -97,13 +97,14 @@ def tune_search(train, test, pretrained_model, project_name, verb):
         validation_data=(test),
         verbose=verb,
         callbacks=[EarlyStopping("val_loss", patience=3)],
-        #class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
+        # class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
     )
 
     if verb == 2:
         print(tuner.results_summary())
 
     return tuner.get_best_models()[0]
+
 
 ### TODO:
 ###       1) Split train in train / validation and leave test out
