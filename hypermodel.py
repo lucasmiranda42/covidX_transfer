@@ -13,10 +13,11 @@ from kerastuner import *
 
 
 class NASnet_transfer(HyperModel):
-    def __init__(self, input_shape):
+    def __init__(self, input_shape, pretrained_model):
         self.input_shape = input_shape
+        self.pretrained_model = pretrained_model
 
-    def build(self, hp, pre_trained_model):
+    def build(self, hp):
         # Hyperparameters to tune
         Dense_layers = hp.Int(
             "number of dense layers", min_value=0, max_value=2, step=1, default=0
@@ -32,10 +33,10 @@ class NASnet_transfer(HyperModel):
             "dropout_rate", min_value=0.0, max_value=0.5, default=0.25, step=0.05
         )
 
-        last_layer = pre_trained_model.get_layer(pre_trained_model.layers[-1].name)
+        last_layer = self.pretrained_model.get_layer(
+            self.pretrained_model.layers[-1].name
+        )
         last_output = last_layer.output
-
-        """toy model for testing the generators"""
 
         # Adds a global average pooling to reduce the dimensionality of the output
         x = layers.GlobalAveragePooling2D()(last_output)
@@ -68,3 +69,40 @@ class NASnet_transfer(HyperModel):
         )
 
         return model
+
+
+def tune_search(train, test, pretrained_model, project_name, verb):
+    """Define the search space using keras-tuner and bayesian optimization"""
+    hypermodel = NASnet_transfer(
+        input_shape=(331, 331, 3), pretrained_model=pretrained_model
+    )
+
+    tuner = BayesianOptimization(
+        hypermodel,
+        max_trials=100,
+        executions_per_trial=3,
+        seed=42,
+        objective="val_accuracy",
+        directory="BayesianOptx",
+        project_name=project_name,
+        # distribution_strategy=tf.distribute.MirroredStrategy(),
+    )
+
+    if verb == 2:
+        print(tuner.search_space_summary())
+
+    tuner.search(
+        train,
+        train,
+        epochs=30,
+        validation_data=(test, test),
+        verbose=verb,
+        batch_size=128,
+        callbacks=[tf.keras.callbacks.EarlyStopping("val_loss", patience=3)],
+        class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
+    )
+
+    if verb == 2:
+        print(tuner.results_summary())
+
+    return tuner.get_best_models()[0]
