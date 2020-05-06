@@ -6,7 +6,7 @@ Main training pipeline for the covidX_transfer project
 """
 
 import argparse
-from keras_preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.nasnet import NASNetLarge
 from hypermodel import tune_search
 

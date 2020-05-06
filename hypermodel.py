@@ -4,11 +4,11 @@ Transfer-learning based hypermodel for the covidX_transfer project
 To be used under the keras-tuner framework
 
 """
-
-from keras import Model
-from keras.losses import categorical_crossentropy
-from keras.optimizers import Adam
-from keras_applications.densenet import layers
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras import Model
+from tensorflow.keras.losses import categorical_crossentropy
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras import layers
 from kerastuner import *
 
 
@@ -52,7 +52,7 @@ class NASnet_transfer(HyperModel):
         # Add a final sigmoid layer for classification
         x = layers.Dense(3, activation="softmax")(x)
 
-        model = Model(pre_trained_model.input, x)
+        model = Model(self.pretrained_model.input, x)
 
         model.compile(
             loss=categorical_crossentropy,
@@ -65,7 +65,7 @@ class NASnet_transfer(HyperModel):
                     default=1e-3,
                 ),
             ),
-            metrics=[""],
+            metrics=["categorical_accuracy"],
         )
 
         return model
@@ -93,12 +93,11 @@ def tune_search(train, test, pretrained_model, project_name, verb):
 
     tuner.search(
         train,
-        train,
+        train_y,
         epochs=30,
-        validation_data=(test, test),
+        validation_data=(test, test_y),
         verbose=verb,
-        batch_size=128,
-        callbacks=[tf.keras.callbacks.EarlyStopping("val_loss", patience=3)],
+        callbacks=[EarlyStopping("val_loss", patience=3)],
         class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
     )
 
@@ -106,3 +105,7 @@ def tune_search(train, test, pretrained_model, project_name, verb):
         print(tuner.results_summary())
 
     return tuner.get_best_models()[0]
+
+### TODO:
+###       1) Split train in train / validation and leave test out
+###       2) Revise metrics and weighted loss for class imbalance correction
