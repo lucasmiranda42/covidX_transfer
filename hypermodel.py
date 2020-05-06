@@ -93,12 +93,11 @@ def tune_search(train, test, pretrained_model, project_name, verb):
 
     tuner.search(
         train,
-        train_y,
         epochs=30,
-        validation_data=(test, test_y),
+        validation_data=(test),
         verbose=verb,
         callbacks=[EarlyStopping("val_loss", patience=3)],
-        class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
+        #class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
     )
 
     if verb == 2:
