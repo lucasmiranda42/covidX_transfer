@@ -65,6 +65,7 @@ datagen = ImageDataGenerator(
 )
 
 train_dir = "{}/train".format(path)
+val_dir = "{}/validationl".format(path)
 test_dir = "{}/test".format(path)
 
 # Add our data-augmentation parameters to ImageDataGenerator
@@ -81,7 +82,12 @@ train_datagen = ImageDataGenerator(
 )
 
 # Note that the validation data should not be augmented!
-test_datagen = ImageDataGenerator(rescale=1.0 / 255.0)
+val_datagen = ImageDataGenerator(
+    samplewise_center=True, samplewise_std_normalization=True
+)
+test_datagen = ImageDataGenerator(
+    samplewise_center=True, samplewise_std_normalization=True
+)
 
 # Flow training images in batches of 20 using train_datagen generator
 train_generator = train_datagen.flow_from_directory(
@@ -89,21 +95,20 @@ train_generator = train_datagen.flow_from_directory(
 )
 
 # Flow validation images in batches of 20 using test_datagen generator
+val_generator = val_datagen.flow_from_directory(
+    test_dir, batch_size=32, class_mode="categorical", target_size=(331, 331)
+)
+
+# Flow test images in batches of 20 using test_datagen generator
 test_generator = test_datagen.flow_from_directory(
     test_dir, batch_size=32, class_mode="categorical", target_size=(331, 331)
 )
 
 print("Starting hyperparameter tuning...")
 best_model = tune_search(
-    train_generator, test_generator, pre_trained_model, "COVIDx", verb
+    train_generator, val_generator, pre_trained_model, "COVIDx", verb
 )
 
-best_model.save('COVIDx_transfer_best_model.h5')
+best_model.save("COVIDx_transfer_best_model.h5")
 
 print("Done!")
-
-
-# Train and deploy the resulting model
-
-# Explore model blending
-# https://www.kaggle.com/cdeotte/25-million-images-0-99757-mnist
