@@ -7,7 +7,6 @@ Main training pipeline for the covidX_transfer project
 
 import argparse
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.applications.nasnet import NASNetLarge
 from hypermodel import tune_search
 
 parser = argparse.ArgumentParser(
@@ -47,18 +46,6 @@ if not path:
     raise ValueError("set a valid data path for the training to run")
 if verb not in [0, 1, 2]:
     raise ValueError("verbose has to be one of 0, 1 or 2")
-
-
-pre_trained_model = NASNetLarge(
-    input_shape=(331, 331, 3), include_top=False, weights="imagenet"
-)
-
-if not fine_tune:
-    for layer in pre_trained_model.layers:
-        layer.trainable = False
-
-if verb == 2:
-    print(pre_trained_model.summary())
 
 datagen = ImageDataGenerator(
     rotation_range=10, zoom_range=0.10, width_shift_range=0.1, height_shift_range=0.1
@@ -105,9 +92,7 @@ val_generator = val_datagen.flow_from_directory(
 # )
 
 print("Starting hyperparameter tuning...")
-best_model = tune_search(
-    train_generator, val_generator, pre_trained_model, "COVIDx", verb
-)
+best_model = tune_search(train_generator, val_generator, fine_tune, "COVIDx", verb)
 
 best_model.save("COVIDx_transfer_best_model.h5")
 

@@ -4,14 +4,15 @@ Transfer-learning based hypermodel for the covidX_transfer project
 To be used under the keras-tuner framework
 
 """
-import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import Model
 from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
+from tensorflow.keras.applications.nasnet import NASNetLarge
 from kerastuner import *
+
 import datetime
 
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -19,11 +20,23 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_fr
 
 
 class NASnet_transfer(HyperModel):
-    def __init__(self, input_shape, pretrained_model):
+    def __init__(self, input_shape, fine_tune):
         self.input_shape = input_shape
-        self.pretrained_model = pretrained_model
+        self.finetune = fine_tune
 
     def build(self, hp):
+
+        pre_trained_model = NASNetLarge(
+            input_shape=(331, 331, 3), include_top=False, weights="imagenet"
+        )
+
+        if not self.finetune:
+            for layer in pre_trained_model.layers:
+                layer.trainable = False
+
+        if verb == 2:
+            print(pre_trained_model.summary())
+
         # Hyperparameters to tune
         Dense_layers = hp.Int(
             "number of dense layers", min_value=0, max_value=2, step=1, default=0
@@ -83,11 +96,9 @@ class NASnet_transfer(HyperModel):
         return model
 
 
-def tune_search(train, test, pretrained_model, project_name, verb):
+def tune_search(train, test, fine_tune, project_name, verb):
     """Define the search space using keras-tuner and bayesian optimization"""
-    hypermodel = NASnet_transfer(
-        input_shape=(331, 331, 3), pretrained_model=pretrained_model
-    )
+    hypermodel = NASnet_transfer(input_shape=(331, 331, 3), fine_tune=fine_tune)
 
     tuner = BayesianOptimization(
         hypermodel,
@@ -97,7 +108,7 @@ def tune_search(train, test, pretrained_model, project_name, verb):
         objective="val_accuracy",
         directory="BayesianOptx",
         project_name=project_name,
-        # distribution_strategy=tf.distribute.MirroredStrategy(),
+        distribution_strategy=tf.distribute.MirroredStrategy(),
     )
 
     if verb == 2:
