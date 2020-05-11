@@ -71,11 +71,11 @@ class NASnet_transfer(HyperModel):
                 ),
             ),
             metrics=[
-                keras.metrics.TruePositives(name="tp"),
-                keras.metrics.FalsePositives(name="fp"),
-                keras.metrics.TrueNegatives(name="tn"),
-                keras.metrics.FalseNegatives(name="fn"),
-                keras.metrics.categorical_accuracy(name="accuracy")
+                keras.metrics.TruePositives(),
+                keras.metrics.FalsePositives(),
+                keras.metrics.TrueNegatives(),
+                keras.metrics.FalseNegatives(),
+                keras.metrics.categorical_accuracy()
             ],
         )
 
