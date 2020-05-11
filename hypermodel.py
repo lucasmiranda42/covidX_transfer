@@ -75,7 +75,7 @@ class NASnet_transfer(HyperModel):
                 keras.metrics.FalsePositives(),
                 keras.metrics.TrueNegatives(),
                 keras.metrics.FalseNegatives(),
-                keras.metrics.categorical_accuracy()
+                "categorical_accuracy"
             ],
         )
 
