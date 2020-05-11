@@ -85,9 +85,9 @@ train_datagen = ImageDataGenerator(
 val_datagen = ImageDataGenerator(
     samplewise_center=True, samplewise_std_normalization=True
 )
-test_datagen = ImageDataGenerator(
-    samplewise_center=True, samplewise_std_normalization=True
-)
+#test_datagen = ImageDataGenerator(
+#    samplewise_center=True, samplewise_std_normalization=True
+#)
 
 # Flow training images in batches of 20 using train_datagen generator
 train_generator = train_datagen.flow_from_directory(
@@ -100,9 +100,9 @@ val_generator = val_datagen.flow_from_directory(
 )
 
 # Flow test images in batches of 20 using test_datagen generator
-test_generator = test_datagen.flow_from_directory(
-    test_dir, batch_size=32, class_mode="categorical", target_size=(331, 331)
-)
+#test_generator = test_datagen.flow_from_directory(
+#    test_dir, batch_size=32, class_mode="categorical", target_size=(331, 331)
+#)
 
 print("Starting hyperparameter tuning...")
 best_model = tune_search(
