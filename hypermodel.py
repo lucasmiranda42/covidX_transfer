@@ -4,7 +4,8 @@ Transfer-learning based hypermodel for the covidX_transfer project
 To be used under the keras-tuner framework
 
 """
-from tensorflow import distribute, keras
+import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import Model
 from tensorflow.keras.losses import categorical_crossentropy
@@ -95,7 +96,7 @@ def tune_search(train, test, pretrained_model, project_name, verb):
         objective="val_accuracy",
         directory="BayesianOptx",
         project_name=project_name,
-        distribution_strategy=distribute.MirroredStrategy(),
+        distribution_strategy=tf.distribute.MirroredStrategy(),
     )
 
     if verb == 2:
