@@ -75,12 +75,12 @@ val_datagen = ImageDataGenerator(
 
 # Flow training images in batches of 20 using train_datagen generator
 train_generator = train_datagen.flow_from_directory(
-    train_dir, batch_size=512, class_mode="categorical", target_size=(331, 331)
+    train_dir, batch_size=64, class_mode="categorical", target_size=(331, 331)
 )
 
 # Flow validation images in batches of 20 using test_datagen generator
 val_generator = val_datagen.flow_from_directory(
-    val_dir, batch_size=512, class_mode="categorical", target_size=(331, 331)
+    val_dir, batch_size=64, class_mode="categorical", target_size=(331, 331)
 )
 
 
