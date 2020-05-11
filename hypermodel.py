@@ -104,7 +104,7 @@ def tune_search(train, test, fine_tune, project_name, verb):
         objective="val_accuracy",
         directory="BayesianOptx",
         project_name=project_name,
-        # distribution_strategy=tf.distribute.MirroredStrategy(),
+        distribution_strategy=tf.distribute.MirroredStrategy(),
     )
 
     if verb == 2:
