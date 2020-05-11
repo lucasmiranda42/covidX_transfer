@@ -13,7 +13,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
 from tensorflow.keras.applications.nasnet import NASNetLarge
 from kerastuner import *
-
+import tensorflow as tf
 import datetime
 
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
