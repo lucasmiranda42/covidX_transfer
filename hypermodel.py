@@ -35,9 +35,6 @@ class NASnet_transfer(HyperModel):
             for layer in pre_trained_model.layers:
                 layer.trainable = False
 
-        if verb == 2:
-            print(pre_trained_model.summary())
-
         # Hyperparameters to tune
         Dense_layers = hp.Int(
             "number of dense layers", min_value=0, max_value=2, step=1, default=0
