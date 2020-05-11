@@ -27,7 +27,7 @@ class NASnet_transfer(HyperModel):
 
     def build(self, hp):
 
-        pre_trained_model = NASNetLarge(
+        pretrained_model = NASNetLarge(
             input_shape=(331, 331, 3), include_top=False, weights="imagenet"
         )
 
@@ -50,8 +50,8 @@ class NASnet_transfer(HyperModel):
             "dropout_rate", min_value=0.0, max_value=0.5, default=0.25, step=0.05
         )
 
-        last_layer = self.pretrained_model.get_layer(
-            self.pretrained_model.layers[-1].name
+        last_layer = pretrained_model.get_layer(
+            pretrained_model.layers[-1].name
         )
         last_output = last_layer.output
 
@@ -69,7 +69,7 @@ class NASnet_transfer(HyperModel):
         # Add a final sigmoid layer for classification
         x = layers.Dense(3, activation="softmax")(x)
 
-        model = Model(self.pretrained_model.input, x)
+        model = Model(pretrained_model.input, x)
 
         model.compile(
             loss=categorical_crossentropy,
