@@ -1,3 +1,4 @@
+# @author: lucasmiranda42
 """
 
 Transfer-learning based hypermodel for the covidX_transfer project
