@@ -4,7 +4,7 @@ Transfer-learning based hypermodel for the covidX_transfer project
 To be used under the keras-tuner framework
 
 """
-from tensorflow import distribute
+from tensorflow import distribute, keras
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import Model
 from tensorflow.keras.losses import categorical_crossentropy
@@ -66,7 +66,13 @@ class NASnet_transfer(HyperModel):
                     default=1e-3,
                 ),
             ),
-            metrics=["categorical_accuracy"],
+            metrics=[
+                keras.metrics.TruePositives(name="tp"),
+                keras.metrics.FalsePositives(name="fp"),
+                keras.metrics.TrueNegatives(name="tn"),
+                keras.metrics.FalseNegatives(name="fn"),
+                keras.metrics.categorical_accuracy(name="accuracy")
+            ],
         )
 
         return model
@@ -108,5 +114,4 @@ def tune_search(train, test, pretrained_model, project_name, verb):
 
 
 ### TODO:
-###       1) Split train in train / validation and leave test out
-###       2) Revise metrics and weighted loss for class imbalance correction
+###       1) Revise metrics and weighted loss for class imbalance correction
