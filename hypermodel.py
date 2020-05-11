@@ -11,7 +11,10 @@ from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
 from kerastuner import *
+import datetime
 
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
 class NASnet_transfer(HyperModel):
     def __init__(self, input_shape, pretrained_model):
@@ -103,8 +106,8 @@ def tune_search(train, test, pretrained_model, project_name, verb):
         epochs=30,
         validation_data=(test),
         verbose=verb,
-        callbacks=[EarlyStopping("val_loss", patience=3)],
-        # class_weight={"normal": 1, "pneumonia": 1, "COVID-19": 1},
+        callbacks=[EarlyStopping("val_loss", patience=3),
+                   tensorboard_callback],
     )
 
     if verb == 2:
