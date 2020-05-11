@@ -32,7 +32,7 @@ class NASnet_transfer(HyperModel):
         )
 
         if not self.finetune:
-            for layer in pre_trained_model.layers:
+            for layer in pretrained_model.layers:
                 layer.trainable = False
 
         # Hyperparameters to tune
