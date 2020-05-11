@@ -47,10 +47,6 @@ if not path:
 if verb not in [0, 1, 2]:
     raise ValueError("verbose has to be one of 0, 1 or 2")
 
-datagen = ImageDataGenerator(
-    rotation_range=10, zoom_range=0.10, width_shift_range=0.1, height_shift_range=0.1
-)
-
 train_dir = "{}/train".format(path)
 val_dir = "{}/validation".format(path)
 

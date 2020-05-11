@@ -50,9 +50,7 @@ class NASnet_transfer(HyperModel):
             "dropout_rate", min_value=0.0, max_value=0.5, default=0.25, step=0.05
         )
 
-        last_layer = pretrained_model.get_layer(
-            pretrained_model.layers[-1].name
-        )
+        last_layer = pretrained_model.get_layer(pretrained_model.layers[-1].name)
         last_output = last_layer.output
 
         # Adds a global average pooling to reduce the dimensionality of the output
@@ -117,7 +115,7 @@ def tune_search(train, test, fine_tune, project_name, verb):
         epochs=30,
         validation_data=(test),
         verbose=verb,
-        #callbacks=[EarlyStopping("val_loss", patience=3), tensorboard_callback],
+        callbacks=[EarlyStopping("val_loss", patience=3), tensorboard_callback],
     )
 
     if verb == 2:
