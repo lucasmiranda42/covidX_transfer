@@ -69,8 +69,10 @@ class NASnet_transfer(HyperModel):
 
         model = Model(pretrained_model.input, x)
 
+        print(model.summary())
+
         model.compile(
-            loss=categorical_crossentropy,
+            loss='categorical_crossentropy',
             optimizer=Adam(
                 lr=hp.Float(
                     "learning_rate",
@@ -81,10 +83,10 @@ class NASnet_transfer(HyperModel):
                 ),
             ),
             metrics=[
-                keras.metrics.TruePositives(),
-                keras.metrics.FalsePositives(),
-                keras.metrics.TrueNegatives(),
-                keras.metrics.FalseNegatives(),
+                #keras.metrics.TruePositives(),
+                #keras.metrics.FalsePositives(),
+                #keras.metrics.TrueNegatives(),
+                #keras.metrics.FalseNegatives(),
                 "categorical_accuracy",
             ],
         )
