@@ -54,13 +54,13 @@ val_dir = "{}/validation".format(path)
 train_datagen = ImageDataGenerator(
     samplewise_center=True,
     samplewise_std_normalization=True,
-    #rotation_range=10,
-    #width_shift_range=0.1,
-    #height_shift_range=0.1,
-    #shear_range=0.1,
-    #zoom_range=0.1,
-    #horizontal_flip=False,
-    #vertical_flip=False,
+    rotation_range=10,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.1,
+    zoom_range=0.1,
+    horizontal_flip=False,
+    vertical_flip=False,
 )
 
 # Note that the validation data should not be augmented!
