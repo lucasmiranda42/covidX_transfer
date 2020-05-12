@@ -116,7 +116,7 @@ def tune_search(train, test, fine_tune, project_name, verb):
         train,
         epochs=30,
         validation_data=(test),
-        verbose=verb,
+        verbose=2,
         callbacks=[EarlyStopping("val_loss", patience=3), tensorboard_callback],
     )
 
