@@ -8,6 +8,8 @@ Main training pipeline for the covidX_transfer project
 import argparse
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from hypermodel import tune_search
+import multiprocessing as mp
+mp.set_start_method('spawn', force=True)
 
 parser = argparse.ArgumentParser(
     description="Training script for the covidX_transfer project"
