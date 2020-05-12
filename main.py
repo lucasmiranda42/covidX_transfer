@@ -41,7 +41,6 @@ verb = int(args.verbose)
 blend = args.blend
 fine_tune = args.fine_tune
 
-
 if not path:
     raise ValueError("set a valid data path for the training to run")
 if verb not in [0, 1, 2]:
@@ -52,8 +51,8 @@ val_dir = "{}/validation".format(path)
 
 # Add our data-augmentation parameters to ImageDataGenerator
 train_datagen = ImageDataGenerator(
-    samplewise_center=True,
     samplewise_std_normalization=True,
+    samplewise_center=True,
     rotation_range=10,
     width_shift_range=0.1,
     height_shift_range=0.1,
@@ -68,8 +67,7 @@ val_datagen = ImageDataGenerator(
     samplewise_center=True, samplewise_std_normalization=True
 )
 
-
-# Flow training images in batches of 20 using train_datagen generator
+# Flow training images in batches using train_datagen generator
 train_generator = train_datagen.flow_from_directory(
     train_dir,
     batch_size=64,
@@ -78,7 +76,7 @@ train_generator = train_datagen.flow_from_directory(
     shuffle=True,
 )
 
-# Flow validation images in batches of 20 using test_datagen generator
+# Flow validation images in batches using test_datagen generator
 val_generator = val_datagen.flow_from_directory(
     val_dir,
     batch_size=64,
