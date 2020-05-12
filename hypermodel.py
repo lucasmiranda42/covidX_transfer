@@ -100,7 +100,7 @@ def tune_search(train, test, fine_tune, project_name, verb):
 
     tuner = BayesianOptimization(
         hypermodel,
-        max_trials=100,
+        max_trials=10,
         executions_per_trial=1,
         seed=42,
         objective="val_categorical_accuracy",
