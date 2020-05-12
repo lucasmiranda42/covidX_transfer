@@ -12,7 +12,6 @@ from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras import layers
 from tensorflow.keras.applications.nasnet import NASNetLarge
-from tensorflow.keras.applications.resnet50 import ResNet50
 from kerastuner import *
 import tensorflow as tf
 import datetime
@@ -28,8 +27,8 @@ class NASnet_transfer(HyperModel):
 
     def build(self, hp):
 
-        pretrained_model = ResNet50(
-            input_shape=(224, 224, 3), include_top=False, weights="imagenet"
+        pretrained_model = NASNetLarge(
+            input_shape=(331, 331, 3), include_top=False, weights="imagenet"
         )
 
         if not self.finetune:
@@ -95,7 +94,7 @@ class NASnet_transfer(HyperModel):
 
 def tune_search(train, test, fine_tune, project_name, verb):
     """Define the search space using keras-tuner and bayesian optimization"""
-    hypermodel = NASnet_transfer(input_shape=(224, 224, 3), fine_tune=fine_tune)
+    hypermodel = NASnet_transfer(input_shape=(331, 331, 3), fine_tune=fine_tune)
 
     tuner = BayesianOptimization(
         hypermodel,
