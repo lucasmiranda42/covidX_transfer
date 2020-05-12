@@ -123,7 +123,7 @@ def tune_search(train, test, fine_tune, project_name, verb):
     if verb == 2:
         print(tuner.results_summary())
 
-    return tuner.get_best_models()[0]
+    return tuner.get_best_models()
 
 
 ### TODO:

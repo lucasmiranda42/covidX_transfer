@@ -89,6 +89,7 @@ val_generator = val_datagen.flow_from_directory(
 print("Starting hyperparameter tuning...")
 best_model = tune_search(train_generator, val_generator, fine_tune, "COVIDx", verb)
 
-best_model.save("COVIDx_transfer_best_model.h5")
+best_model[1].save("COVIDx_transfer_best_model.h5")
+best_model[0].save("COVIDx_transfer_first_model.h5")
 
 print("Done!")
