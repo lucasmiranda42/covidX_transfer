@@ -70,7 +70,7 @@ val_datagen = ImageDataGenerator(
 # Flow training images in batches using train_datagen generator
 train_generator = train_datagen.flow_from_directory(
     train_dir,
-    batch_size=64,
+    batch_size=20,
     class_mode="categorical",
     target_size=(331, 331),
     shuffle=True,
@@ -79,7 +79,7 @@ train_generator = train_datagen.flow_from_directory(
 # Flow validation images in batches using test_datagen generator
 val_generator = val_datagen.flow_from_directory(
     val_dir,
-    batch_size=64,
+    batch_size=20,
     class_mode="categorical",
     target_size=(331, 331),
     shuffle=True,
