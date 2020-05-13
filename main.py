@@ -87,9 +87,13 @@ val_generator = val_datagen.flow_from_directory(
 
 
 print("Starting hyperparameter tuning...")
-best_models = tune_search(train_generator, val_generator, fine_tune, "COVIDx", verb)
+best_models, best_params = tune_search(
+    train_generator, val_generator, fine_tune, "COVIDx", verb
+)
 
 for i, model in enumerate(best_models):
     model.save("COVIDx_transfer_best_model_{}.h5".format(i))
+for j, param in enumerate(best_params):
+    param.save("COVIDx_transfer_best_params.h5".format(j))
 
 print("Done!")
