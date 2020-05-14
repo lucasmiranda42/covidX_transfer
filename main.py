@@ -20,7 +20,7 @@ parser.add_argument(
     "-v",
     help="sets the verbosity of the output. Possible values: 0, 1, 2",
     default=1,
-    type=int
+    type=int,
 )
 parser.add_argument(
     "--blend",
@@ -28,7 +28,6 @@ parser.add_argument(
     help="defines the number of blending models to train",
     type=int,
     default=1,
-    type=int
 )
 parser.add_argument(
     "--fine-tune",
@@ -42,7 +41,7 @@ parser.add_argument(
     "-n",
     help="sets the number of Bayesian optimization iterations to run. Default is 25",
     default=25,
-    type=int
+    type=int,
 )
 
 args = parser.parse_args()
@@ -105,7 +104,7 @@ best_models, best_params = tune_search(
 for i, model in enumerate(best_models):
     model.save("COVIDx_transfer_best_model_{}.h5".format(i))
 for j, param in enumerate(best_params):
-    with open("COVIDx_transfer_best_params.h5", 'wb') as handle:
+    with open("COVIDx_transfer_best_params.h5", "wb") as handle:
         pickle.dump(param, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 print("Done!")
