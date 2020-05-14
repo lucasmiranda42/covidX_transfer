@@ -6,6 +6,7 @@ Main training pipeline for the covidX_transfer project
 """
 
 import argparse
+import pickle
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from hypermodel import tune_search
 
@@ -94,6 +95,7 @@ best_models, best_params = tune_search(
 for i, model in enumerate(best_models):
     model.save("COVIDx_transfer_best_model_{}.h5".format(i))
 for j, param in enumerate(best_params):
-    param.save("COVIDx_transfer_best_params.h5")
+    with open("COVIDx_transfer_best_params.h5", 'wb') as handle:
+        pickle.dump(param, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 print("Done!")
