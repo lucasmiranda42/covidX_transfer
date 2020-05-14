@@ -94,13 +94,13 @@ class NASnet_transfer(HyperModel):
         return model
 
 
-def tune_search(train, test, fine_tune, project_name, verb):
+def tune_search(train, test, fine_tune, project_name, verb, bayopt_trials):
     """Define the search space using keras-tuner and bayesian optimization"""
     hypermodel = NASnet_transfer(input_shape=(331, 331, 3), fine_tune=fine_tune)
 
     tuner = BayesianOptimization(
         hypermodel,
-        max_trials=25,
+        max_trials=bayopt_trials,
         executions_per_trial=1,
         seed=42,
         objective="val_categorical_accuracy",

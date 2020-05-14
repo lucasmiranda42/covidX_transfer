@@ -20,6 +20,7 @@ parser.add_argument(
     "-v",
     help="sets the verbosity of the output. Possible values: 0, 1, 2",
     default=1,
+    type=int
 )
 parser.add_argument(
     "--blend",
@@ -27,6 +28,7 @@ parser.add_argument(
     help="defines the number of blending models to train",
     type=int,
     default=1,
+    type=int
 )
 parser.add_argument(
     "--fine-tune",
@@ -35,12 +37,20 @@ parser.add_argument(
     help="Fine tune the whole pretrained model if True, and only the last layer if False",
     type=bool,
 )
+parser.add_argument(
+    "--bayopt",
+    "-n",
+    help="sets the number of Bayesian optimization iterations to run. Default is 25",
+    default=25,
+    type=int
+)
 
 args = parser.parse_args()
 path = args.path
 verb = int(args.verbose)
 blend = args.blend
 fine_tune = args.fine_tune
+bayopt_trials = args.bayopt
 
 if not path:
     raise ValueError("set a valid data path for the training to run")
@@ -89,7 +99,7 @@ val_generator = val_datagen.flow_from_directory(
 
 print("Starting hyperparameter tuning...")
 best_models, best_params = tune_search(
-    train_generator, val_generator, fine_tune, "COVIDx", verb
+    train_generator, val_generator, fine_tune, "COVIDx", verb, bayopt_trials
 )
 
 for i, model in enumerate(best_models):
