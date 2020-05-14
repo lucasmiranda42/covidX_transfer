@@ -94,6 +94,6 @@ best_models, best_params = tune_search(
 for i, model in enumerate(best_models):
     model.save("COVIDx_transfer_best_model_{}.h5".format(i))
 for j, param in enumerate(best_params):
-    param.save("COVIDx_transfer_best_params.h5".format(j))
+    param.save("COVIDx_transfer_best_params.h5")
 
 print("Done!")
