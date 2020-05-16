@@ -124,7 +124,7 @@ def tune_search(train, test, fine_tune, project_name, verb, bayopt_trials):
         print(tuner.results_summary())
 
     return (
-        tuner.get_best_models(num_models=24),
+        tuner.get_best_models(num_models=bayopt_trials-1),
         tuner.get_best_hyperparameters(num_trials=1),
     )
 
